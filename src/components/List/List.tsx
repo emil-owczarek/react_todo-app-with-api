@@ -1,25 +1,30 @@
-import { USER_ID, getTodos } from '../../api/todos';
-import { Todo } from '../../types/Todo';
+import { USER_ID, getTodos } from '../../api/books';
+import { Book } from '../../types/Todo';
 import { TodoItem } from '../Item/TodoItem';
 
 type ListProps = {
-  todos: Todo[];
-  tempTodo: Todo | null;
+  todos: Book[];
+  tempTodo: Book | null;
   handleDelete: (todoId: number) => void;
   onStatusChange: (todoId: number, completed: boolean) => void;
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+  setTodos: React.Dispatch<React.SetStateAction<Book[]>>;
   isLoading: boolean;
   isDeleting: boolean;
   isToggling: boolean;
   isTogglingAll: boolean;
 };
 
-export const List: React.FC<ListProps> = (
-  {
-    todos, tempTodo, handleDelete,
-    onStatusChange, setTodos, isLoading, isDeleting, isToggling, isTogglingAll,
-  },
-) => {
+export const List: React.FC<ListProps> = ({
+  todos,
+  tempTodo,
+  handleDelete,
+  onStatusChange,
+  setTodos,
+  isLoading,
+  isDeleting,
+  isToggling,
+  isTogglingAll,
+}) => {
   const reloadTodos = async () => {
     const reloadedTodos = await getTodos(USER_ID);
 

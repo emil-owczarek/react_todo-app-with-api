@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
 import React, { useState, useRef } from 'react';
 import cn from 'classnames';
-import { Todo } from '../../types/Todo';
-import { updateTodo } from '../../api/todos';
+import { Book } from '../../types/Todo';
+import { updateTodo } from '../../api/books';
 import { handleError } from '../../handleError';
 import { ErrorMessage } from '../../types/ErrorMessage';
 
 type TodoItemProps = {
-  todo: Todo;
+  todo: Book;
   handleDelete: (todoId: number) => void;
   onStatusChange: (todoId: number, completed: boolean) => void;
   onTodoUpdate: () => void;
@@ -18,7 +18,14 @@ type TodoItemProps = {
 };
 
 export const TodoItem: React.FC<TodoItemProps> = ({
-  todo, handleDelete, onStatusChange, onTodoUpdate, isLoading, isDeleting, isToggling, isTogglingAll,
+  todo,
+  handleDelete,
+  onStatusChange,
+  onTodoUpdate,
+  isLoading,
+  isDeleting,
+  isToggling,
+  isTogglingAll,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(todo.title);
@@ -110,9 +117,15 @@ export const TodoItem: React.FC<TodoItemProps> = ({
       </button>
       <div
         data-cy="TodoLoader"
-        className={cn(
-          'modal', 'overlay', { 'is-active': loading || isLoading || isUpdating || isDeleting || isToggling || isTogglingAll },
-        )}
+        className={cn('modal', 'overlay', {
+          'is-active':
+            loading
+            || isLoading
+            || isUpdating
+            || isDeleting
+            || isToggling
+            || isTogglingAll,
+        })}
       >
         <div className="modal-background has-background-white-ter" />
         <div className="loader" />

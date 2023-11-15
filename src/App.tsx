@@ -2,33 +2,39 @@
 import React, { useEffect, useState } from 'react';
 import { UserWarning } from './UserWarning';
 import {
-  USER_ID, addTodo, deleteTodo, getTodos, updateTodo,
-} from './api/todos';
-import { Todo } from './types/Todo';
+  USER_ID,
+  addTodo,
+  deleteTodo,
+  getTodos,
+  updateTodo,
+} from './api/books';
+import { Book } from './types/Todo';
 import { Header } from './components/Header/Header';
 import { List } from './components/List/List';
 import { Footer } from './components/Footer/Footer';
 import { handleError } from './handleError';
 import { ErrorMessage } from './types/ErrorMessage';
 import { Filter } from './types/Filter';
+import book from './—Pngtree—open old books_2140422.png';
+import { SidePanel } from './components/SidePanel/SidePanel';
 
 export const App: React.FC = () => {
-  const [todos, setTodos] = useState<Todo[]>([]);
+  const [todos, setTodos] = useState<Book[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [title, setTitle] = useState('');
   const [filter, setFilter] = useState<Filter>('All');
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [tempTodo, setTempTodo] = useState<Todo | null>(null);
+  const [tempTodo, setTempTodo] = useState<Book | null>(null);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [isToggling, setIsToggling] = useState<boolean>(false);
   const [isTogglingAll, setIsTogglingAll] = useState<boolean>(false);
 
   const counter = () => {
-    return todos.filter(todo => !todo.completed).length;
+    return todos.filter((todo) => !todo.completed).length;
   };
 
   const visibleTodos = () => {
-    const visible = [...todos].filter(todo => {
+    const visible = [...todos].filter((todo) => {
       if (filter === 'Active' && todo.completed) {
         return false;
       }
@@ -61,37 +67,45 @@ export const App: React.FC = () => {
     setTempTodo(newTodo);
 
     setIsLoading(true);
-    addTodo(newTodo).then((response) => {
-      setTitle('');
-      setTodos((oldTodos) => [...oldTodos, response]);
-    }).catch(() => {
-      handleError(setErrorMessage, ErrorMessage.noAddTodo);
-    }).finally(() => {
-      setIsLoading(false);
-      setTempTodo(null);
-    });
+    addTodo(newTodo)
+      .then((response) => {
+        setTitle('');
+        setTodos((oldTodos) => [...oldTodos, response]);
+      })
+      .catch(() => {
+        handleError(setErrorMessage, ErrorMessage.noAddTodo);
+      })
+      .finally(() => {
+        setIsLoading(false);
+        setTempTodo(null);
+      });
   };
 
   const handleDelete = (todoId: number) => {
     setIsDeleting(true);
-    deleteTodo(todoId).then(() => {
-      setTodos((oldTodos) => oldTodos.filter(todo => todo.id !== todoId));
-    }).catch(() => {
-      handleError(setErrorMessage, ErrorMessage.noDeleteTodo);
-    }).finally(() => {
-      setIsDeleting(false);
-    });
+    deleteTodo(todoId)
+      .then(() => {
+        setTodos((oldTodos) => oldTodos.filter((todo) => todo.id !== todoId));
+      })
+      .catch(() => {
+        handleError(setErrorMessage, ErrorMessage.noDeleteTodo);
+      })
+      .finally(() => {
+        setIsDeleting(false);
+      });
   };
 
   const handleToggleAll = () => {
-    const areAllCompleted = todos.every(todo => todo.completed);
-    const updatedTodos = todos.map(todo => ({
+    const areAllCompleted = todos.every((todo) => todo.completed);
+    const updatedTodos = todos.map((todo) => ({
       ...todo,
       completed: !areAllCompleted,
     }));
 
     setIsTogglingAll(true);
-    Promise.all(updatedTodos.map(todo => updateTodo(todo.id, { completed: todo.completed })))
+    Promise.all(
+      updatedTodos.map((todo) => updateTodo(todo.id, { completed: todo.completed })),
+    )
       .then(() => {
         setTodos(updatedTodos);
       })
@@ -106,11 +120,8 @@ export const App: React.FC = () => {
   const handleStatusChange = (todoId: number, completed: boolean) => {
     setIsToggling(true);
     updateTodo(todoId, { completed })
-      .then(updatedTodo => {
-        setTodos(
-          prevTodos => prevTodos.map(todo => (
-            todo.id === updatedTodo.id ? updatedTodo : todo)),
-        );
+      .then((updatedTodo) => {
+        setTodos((prevTodos) => prevTodos.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo)));
       })
       .catch(() => {
         handleError(setErrorMessage, ErrorMessage.noUpdateTodo);
@@ -121,11 +132,11 @@ export const App: React.FC = () => {
   };
 
   const handleClearCompleted = () => {
-    const completedTodos = todos.filter(todo => todo.completed);
+    const completedTodos = todos.filter((todo) => todo.completed);
 
-    Promise.all(completedTodos.map(todo => deleteTodo(todo.id)))
+    Promise.all(completedTodos.map((todo) => deleteTodo(todo.id)))
       .then(() => {
-        setTodos(prevTodos => prevTodos.filter(todo => !todo.completed));
+        setTodos((prevTodos) => prevTodos.filter((todo) => !todo.completed));
       })
       .catch(() => {
         handleError(setErrorMessage, ErrorMessage.noDeleteTodo);
@@ -140,7 +151,8 @@ export const App: React.FC = () => {
       })
       .catch(() => {
         handleError(setErrorMessage, ErrorMessage.noTodos);
-      }).finally(() => {
+      })
+      .finally(() => {
         setIsLoading(false);
       });
   }, []);
@@ -151,7 +163,7 @@ export const App: React.FC = () => {
 
   return (
     <div className="todoapp">
-      <h1 className="todoapp__title">todos</h1>
+      <img className="image" src={book} alt="dd" />
 
       <div className="todoapp__content">
         <Header
@@ -162,8 +174,7 @@ export const App: React.FC = () => {
           isLoading={isLoading}
           onToggleAll={handleToggleAll}
         />
-        {todos.length > 0
-        && (
+        {todos.length > 0 && (
           <List
             todos={visibleTodos()}
             tempTodo={tempTodo}
@@ -203,6 +214,7 @@ export const App: React.FC = () => {
         {errorMessage}
         <br />
       </div>
+      <SidePanel />
     </div>
   );
 };

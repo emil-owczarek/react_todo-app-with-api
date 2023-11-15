@@ -1,5 +1,5 @@
 import cn from 'classnames';
-import { Todo } from '../../types/Todo';
+import { Book } from '../../types/Todo';
 import { Filter } from '../../types/Filter';
 
 type FooterProps = {
@@ -7,7 +7,7 @@ type FooterProps = {
   filter: Filter;
   setFilter: (filter: Filter) => void;
   onClearCompleted: () => void;
-  todos: Todo[];
+  todos: Book[];
 };
 
 export const Footer: React.FC<FooterProps> = (
@@ -18,7 +18,7 @@ export const Footer: React.FC<FooterProps> = (
   return (
     <footer className="todoapp__footer" data-cy="Footer">
       <span className="todo-count" data-cy="TodosCounter">
-        {`${counter} items left`}
+        {`${counter} books left`}
       </span>
       <nav className="filter" data-cy="Filter">
         <a
@@ -36,7 +36,7 @@ export const Footer: React.FC<FooterProps> = (
           data-cy="FilterLinkActive"
           onClick={() => setFilter('Active')}
         >
-          Active
+          To read
         </a>
 
         <a

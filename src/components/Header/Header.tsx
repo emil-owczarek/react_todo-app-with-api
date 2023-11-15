@@ -1,12 +1,12 @@
 import cn from 'classnames';
 
-import { Todo } from '../../types/Todo';
+import { Book } from '../../types/Todo';
 
 type HeaderProps = {
   title: string;
   setTitle: (string: string) => void;
   handleSubmit: (event: { preventDefault: () => void }) => void;
-  todos: Todo[];
+  todos: Book[];
   isLoading: boolean;
   onToggleAll: () => void;
 };
@@ -36,7 +36,7 @@ export const Header: React.FC<HeaderProps> = ({
           data-cy="NewTodoField"
           type="text"
           className="todoapp__new-todo"
-          placeholder="What needs to be done?"
+          placeholder="Add a title"
           value={title}
           onChange={(event) => {
             setTitle(event.target.value);

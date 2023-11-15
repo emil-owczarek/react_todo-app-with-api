@@ -3,43 +3,43 @@ import React, { useEffect, useState } from 'react';
 import { UserWarning } from './UserWarning';
 import {
   USER_ID,
-  addTodo,
-  deleteTodo,
-  getTodos,
-  updateTodo,
+  addBook,
+  deleteBook,
+  getBooks,
+  updateBook,
 } from './api/books';
-import { Book } from './types/Todo';
+import { Book } from './types/Book';
 import { Header } from './components/Header/Header';
 import { List } from './components/List/List';
 import { Footer } from './components/Footer/Footer';
 import { handleError } from './handleError';
 import { ErrorMessage } from './types/ErrorMessage';
 import { Filter } from './types/Filter';
-import book from './—Pngtree—open old books_2140422.png';
+import bookPic from './—Pngtree—open old books_2140422.png';
 import { SidePanel } from './components/SidePanel/SidePanel';
 
 export const App: React.FC = () => {
-  const [todos, setTodos] = useState<Book[]>([]);
+  const [books, setBooks] = useState<Book[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [title, setTitle] = useState('');
   const [filter, setFilter] = useState<Filter>('All');
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [tempTodo, setTempTodo] = useState<Book | null>(null);
+  const [tempBook, setTempBook] = useState<Book | null>(null);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [isToggling, setIsToggling] = useState<boolean>(false);
   const [isTogglingAll, setIsTogglingAll] = useState<boolean>(false);
 
   const counter = () => {
-    return todos.filter((todo) => !todo.completed).length;
+    return books.filter((book) => !book.completed).length;
   };
 
-  const visibleTodos = () => {
-    const visible = [...todos].filter((todo) => {
-      if (filter === 'Active' && todo.completed) {
+  const visibleBooks = () => {
+    const visible = [...books].filter((book) => {
+      if (filter === 'Active' && book.completed) {
         return false;
       }
 
-      if (filter === 'Completed' && !todo.completed) {
+      if (filter === 'Completed' && !book.completed) {
         return false;
       }
 
@@ -57,38 +57,38 @@ export const App: React.FC = () => {
       return;
     }
 
-    const newTodo = {
+    const newBook = {
       id: 0,
       userId: USER_ID,
       title: title.trim(),
       completed: false,
     };
 
-    setTempTodo(newTodo);
+    setTempBook(newBook);
 
     setIsLoading(true);
-    addTodo(newTodo)
+    addBook(newBook)
       .then((response) => {
         setTitle('');
-        setTodos((oldTodos) => [...oldTodos, response]);
+        setBooks((oldBooks) => [...oldBooks, response]);
       })
       .catch(() => {
-        handleError(setErrorMessage, ErrorMessage.noAddTodo);
+        handleError(setErrorMessage, ErrorMessage.noAddBook);
       })
       .finally(() => {
         setIsLoading(false);
-        setTempTodo(null);
+        setTempBook(null);
       });
   };
 
-  const handleDelete = (todoId: number) => {
+  const handleDelete = (bookId: number) => {
     setIsDeleting(true);
-    deleteTodo(todoId)
+    deleteBook(bookId)
       .then(() => {
-        setTodos((oldTodos) => oldTodos.filter((todo) => todo.id !== todoId));
+        setBooks((oldBooks) => oldBooks.filter((book) => book.id !== bookId));
       })
       .catch(() => {
-        handleError(setErrorMessage, ErrorMessage.noDeleteTodo);
+        handleError(setErrorMessage, ErrorMessage.noDeleteBook);
       })
       .finally(() => {
         setIsDeleting(false);
@@ -96,35 +96,35 @@ export const App: React.FC = () => {
   };
 
   const handleToggleAll = () => {
-    const areAllCompleted = todos.every((todo) => todo.completed);
-    const updatedTodos = todos.map((todo) => ({
-      ...todo,
+    const areAllCompleted = books.every((book) => book.completed);
+    const updatedBooks = books.map((book) => ({
+      ...book,
       completed: !areAllCompleted,
     }));
 
     setIsTogglingAll(true);
     Promise.all(
-      updatedTodos.map((todo) => updateTodo(todo.id, { completed: todo.completed })),
+      updatedBooks.map((book) => updateBook(book.id, { completed: book.completed })),
     )
       .then(() => {
-        setTodos(updatedTodos);
+        setBooks(updatedBooks);
       })
       .catch(() => {
-        handleError(setErrorMessage, ErrorMessage.noUpdateTodo);
+        handleError(setErrorMessage, ErrorMessage.noUpdateBook);
       })
       .finally(() => {
         setIsTogglingAll(false);
       });
   };
 
-  const handleStatusChange = (todoId: number, completed: boolean) => {
+  const handleStatusChange = (bookId: number, completed: boolean) => {
     setIsToggling(true);
-    updateTodo(todoId, { completed })
-      .then((updatedTodo) => {
-        setTodos((prevTodos) => prevTodos.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo)));
+    updateBook(bookId, { completed })
+      .then((updatedBook) => {
+        setBooks((prevBooks) => prevBooks.map((book) => (book.id === updatedBook.id ? updatedBook : book)));
       })
       .catch(() => {
-        handleError(setErrorMessage, ErrorMessage.noUpdateTodo);
+        handleError(setErrorMessage, ErrorMessage.noUpdateBook);
       })
       .finally(() => {
         setIsToggling(false);
@@ -132,25 +132,25 @@ export const App: React.FC = () => {
   };
 
   const handleClearCompleted = () => {
-    const completedTodos = todos.filter((todo) => todo.completed);
+    const completedBooks = books.filter((book) => book.completed);
 
-    Promise.all(completedTodos.map((todo) => deleteTodo(todo.id)))
+    Promise.all(completedBooks.map((book) => deleteBook(book.id)))
       .then(() => {
-        setTodos((prevTodos) => prevTodos.filter((todo) => !todo.completed));
+        setBooks((prevBooks) => prevBooks.filter((book) => !book.completed));
       })
       .catch(() => {
-        handleError(setErrorMessage, ErrorMessage.noDeleteTodo);
+        handleError(setErrorMessage, ErrorMessage.noDeleteBook);
       });
   };
 
   useEffect(() => {
-    getTodos(USER_ID)
-      .then((todo) => {
-        setTodos(todo);
+    getBooks(USER_ID)
+      .then((book) => {
+        setBooks(book);
         setTitle('');
       })
       .catch(() => {
-        handleError(setErrorMessage, ErrorMessage.noTodos);
+        handleError(setErrorMessage, ErrorMessage.noBooks);
       })
       .finally(() => {
         setIsLoading(false);
@@ -162,38 +162,38 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div className="todoapp">
-      <img className="image" src={book} alt="dd" />
+    <div className="books-to-read">
+      <img className="image" src={bookPic} alt="dd" />
 
-      <div className="todoapp__content">
+      <div className="books-to-read__content">
         <Header
           title={title}
           setTitle={setTitle}
           handleSubmit={handleSubmit}
-          todos={todos}
+          books={books}
           isLoading={isLoading}
           onToggleAll={handleToggleAll}
         />
-        {todos.length > 0 && (
+        {books.length > 0 && (
           <List
-            todos={visibleTodos()}
-            tempTodo={tempTodo}
+            books={visibleBooks()}
+            tempBook={tempBook}
             handleDelete={handleDelete}
             onStatusChange={handleStatusChange}
-            setTodos={setTodos}
+            setBooks={setBooks}
             isLoading={isLoading}
             isDeleting={isDeleting}
             isToggling={isToggling}
             isTogglingAll={isTogglingAll}
           />
         )}
-        {todos.length > 0 && (
+        {books.length > 0 && (
           <Footer
             counter={counter()}
             filter={filter}
             setFilter={setFilter}
             onClearCompleted={handleClearCompleted}
-            todos={todos}
+            books={books}
           />
         )}
       </div>

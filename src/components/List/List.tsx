@@ -1,13 +1,13 @@
-import { USER_ID, getTodos } from '../../api/books';
-import { Book } from '../../types/Todo';
-import { TodoItem } from '../Item/TodoItem';
+import { USER_ID, getBooks } from '../../api/books';
+import { Book } from '../../types/Book';
+import { BookItem } from '../Item/BookItem';
 
 type ListProps = {
-  todos: Book[];
-  tempTodo: Book | null;
-  handleDelete: (todoId: number) => void;
-  onStatusChange: (todoId: number, completed: boolean) => void;
-  setTodos: React.Dispatch<React.SetStateAction<Book[]>>;
+  books: Book[];
+  tempBook: Book | null;
+  handleDelete: (bookId: number) => void;
+  onStatusChange: (bookId: number, completed: boolean) => void;
+  setBooks: React.Dispatch<React.SetStateAction<Book[]>>;
   isLoading: boolean;
   isDeleting: boolean;
   isToggling: boolean;
@@ -15,32 +15,32 @@ type ListProps = {
 };
 
 export const List: React.FC<ListProps> = ({
-  todos,
-  tempTodo,
+  books,
+  tempBook,
   handleDelete,
   onStatusChange,
-  setTodos,
+  setBooks,
   isLoading,
   isDeleting,
   isToggling,
   isTogglingAll,
 }) => {
-  const reloadTodos = async () => {
-    const reloadedTodos = await getTodos(USER_ID);
+  const reloadBooks = async () => {
+    const reloadedBooks = await getBooks(USER_ID);
 
-    setTodos(reloadedTodos);
+    setBooks(reloadedBooks);
   };
 
   return (
-    <section className="todoapp__main" data-cy="TodoList">
-      {todos.map((todo) => {
+    <section className="books-to-read__main">
+      {books.map((book) => {
         return (
-          <TodoItem
-            key={todo.id}
-            todo={todo}
+          <BookItem
+            key={book.id}
+            book={book}
             handleDelete={handleDelete}
             onStatusChange={onStatusChange}
-            onTodoUpdate={reloadTodos}
+            onBookUpdate={reloadBooks}
             isLoading={isLoading}
             isDeleting={isDeleting}
             isToggling={isToggling}
@@ -48,12 +48,12 @@ export const List: React.FC<ListProps> = ({
           />
         );
       })}
-      {tempTodo && (
-        <TodoItem
-          todo={tempTodo}
+      {tempBook && (
+        <BookItem
+          book={tempBook}
           handleDelete={handleDelete}
           onStatusChange={onStatusChange}
-          onTodoUpdate={reloadTodos}
+          onBookUpdate={reloadBooks}
           isLoading={isLoading}
           isDeleting={isDeleting}
           isToggling={isToggling}

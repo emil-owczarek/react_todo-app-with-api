@@ -36,18 +36,23 @@ export const SidePanel = () => {
             simple double-click
           </li>
           <li className="list__element">
+            - advanced error handling: handles problems
+            with a server such as
+            &apos;unable to load/add/edit/remove books.&apos;
+            It also checks for empty titles; you can easily try the last one :)
+          </li>
+          <li className="list__element">
             - mark books as read; the app
             automatically tracks how many you have
             left
           </li>
           <li className="list__element">
-            - filter tasks by their completion status
+            - filter books by their completion status
           </li>
           <li className="list__element">
             - fully scalable for a seamless experience on both desktop and
             mobile devices
           </li>
-
         </ul>
         <p className="panel__tags">#React #TypeScript #SASS #REST API</p>
         <p className="panel__text">

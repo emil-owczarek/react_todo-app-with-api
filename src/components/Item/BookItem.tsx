@@ -1,38 +1,38 @@
 /* eslint-disable max-len */
 import React, { useState, useRef } from 'react';
 import cn from 'classnames';
-import { Book } from '../../types/Todo';
-import { updateTodo } from '../../api/books';
+import { Book } from '../../types/Book';
+import { updateBook } from '../../api/books';
 import { handleError } from '../../handleError';
 import { ErrorMessage } from '../../types/ErrorMessage';
 
-type TodoItemProps = {
-  todo: Book;
-  handleDelete: (todoId: number) => void;
-  onStatusChange: (todoId: number, completed: boolean) => void;
-  onTodoUpdate: () => void;
+type BookItemProps = {
+  book: Book;
+  handleDelete: (bookId: number) => void;
+  onStatusChange: (bookId: number, completed: boolean) => void;
+  onBookUpdate: () => void;
   isLoading: boolean;
   isDeleting: boolean;
   isToggling: boolean;
   isTogglingAll: boolean;
 };
 
-export const TodoItem: React.FC<TodoItemProps> = ({
-  todo,
+export const BookItem: React.FC<BookItemProps> = ({
+  book,
   handleDelete,
   onStatusChange,
-  onTodoUpdate,
+  onBookUpdate,
   isLoading,
   isDeleting,
   isToggling,
   isTogglingAll,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [newTitle, setNewTitle] = useState(todo.title);
+  const [newTitle, setNewTitle] = useState(book.title);
   const [errorMessage, setErrorMessage] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
   const editRef = useRef<HTMLInputElement>(null);
-  const loading = todo.id === 0;
+  const loading = book.id === 0;
 
   const handleDoubleClick = () => {
     setIsEditing(true);
@@ -41,18 +41,18 @@ export const TodoItem: React.FC<TodoItemProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newTitle.trim() === '') {
-      handleDelete(todo.id);
-    } else if (newTitle !== todo.title) {
+      handleDelete(book.id);
+    } else if (newTitle !== book.title) {
       setIsUpdating(true);
       try {
-        await updateTodo(todo.id, {
+        await updateBook(book.id, {
           title: newTitle.trim(),
         });
-        onTodoUpdate();
+        onBookUpdate();
         setIsEditing(false);
         setIsUpdating(false);
       } catch {
-        handleError(setErrorMessage, ErrorMessage.noUpdateTodo);
+        handleError(setErrorMessage, ErrorMessage.noUpdateBook);
         setIsUpdating(false);
       }
     } else {
@@ -71,23 +71,21 @@ export const TodoItem: React.FC<TodoItemProps> = ({
   };
 
   return (
-    <div data-cy="Todo" className={cn('todo', { completed: todo.completed })}>
-      <label className="todo__status-label">
+    <div className={cn('book', { completed: book.completed })}>
+      <label className="book__status-label">
         <input
-          data-cy="TodoStatus"
           type="checkbox"
-          className="todo__status"
-          checked={todo.completed}
-          onChange={() => onStatusChange(todo.id, !todo.completed)}
+          className="book__status"
+          checked={book.completed}
+          onChange={() => onStatusChange(book.id, !book.completed)}
         />
       </label>
 
       {isEditing ? (
         <form onSubmit={handleSubmit}>
           <input
-            data-cy="TodoTitleField"
             type="text"
-            className="todo__title-field"
+            className="book__title-field"
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
             onBlur={handleBlur}
@@ -99,24 +97,21 @@ export const TodoItem: React.FC<TodoItemProps> = ({
         </form>
       ) : (
         <span
-          data-cy="TodoTitle"
-          className="todo__title"
+          className="book__title"
           onDoubleClick={handleDoubleClick}
         >
-          {todo.title}
+          {book.title}
         </span>
       )}
       {errorMessage && <div className="error-message">{errorMessage}</div>}
       <button
         type="button"
-        className="todo__remove"
-        data-cy="TodoDelete"
-        onClick={() => handleDelete(todo.id)}
+        className="book__remove"
+        onClick={() => handleDelete(book.id)}
       >
         ×
       </button>
       <div
-        data-cy="TodoLoader"
         className={cn('modal', 'overlay', {
           'is-active':
             loading

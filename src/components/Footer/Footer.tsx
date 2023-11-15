@@ -1,5 +1,5 @@
 import cn from 'classnames';
-import { Book } from '../../types/Todo';
+import { Book } from '../../types/Book';
 import { Filter } from '../../types/Filter';
 
 type FooterProps = {
@@ -7,17 +7,19 @@ type FooterProps = {
   filter: Filter;
   setFilter: (filter: Filter) => void;
   onClearCompleted: () => void;
-  todos: Book[];
+  books: Book[];
 };
 
-export const Footer: React.FC<FooterProps> = (
-  {
-    counter, filter, setFilter, onClearCompleted, todos,
-  },
-) => {
+export const Footer: React.FC<FooterProps> = ({
+  counter,
+  filter,
+  setFilter,
+  onClearCompleted,
+  books,
+}) => {
   return (
-    <footer className="todoapp__footer" data-cy="Footer">
-      <span className="todo-count" data-cy="TodosCounter">
+    <footer className="books-to-read__footer" data-cy="Footer">
+      <span className="book-count">
         {`${counter} books left`}
       </span>
       <nav className="filter" data-cy="Filter">
@@ -48,10 +50,10 @@ export const Footer: React.FC<FooterProps> = (
           Completed
         </a>
       </nav>
-      {todos.some(todo => todo.completed) && (
+      {books.some((book) => book.completed) && (
         <button
           type="button"
-          className="todoapp__clear-completed"
+          className="books-to-read__clear-completed"
           data-cy="ClearCompletedButton"
           onClick={onClearCompleted}
         >
